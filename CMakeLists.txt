@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 2.8.4) # >= 2.8.4 needed for CYGWIN behavior
 project(yaml C)
 
+# package version numbers
 set(YAML_VERSION_MAJOR 0)
-set(YAML_VERSION_MINOR 2)
-set(YAML_VERSION_PATCH 0)
+set(YAML_VERSION_MINOR 1)
+set(YAML_VERSION_PATCH 4)
 
 set(YAML_VERSION_STRING "${YAML_VERSION_MAJOR}.${YAML_VERSION_MINOR}.${YAML_VERSION_PATCH}")
 configure_file(                 # create configuration file
