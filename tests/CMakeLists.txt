@@ -21,7 +21,11 @@ set(EXAMPLE_SRCS
 )
 
 # target dependencies for tests/examples
-set(EXAMPLE_DEPS yaml)
+if(BUILD_SHARED_LIBS)
+  set(EXAMPLE_DEPS yaml_shared)
+elseif(BUILD_STATIC_LIBS)
+  set(EXAMPLE_DEPS yaml_static)
+endif(BUILD_SHARED_LIBS)
 
 
 # auto_add_exec -- adds an executable target from a <name>.c file and
@@ -47,21 +51,26 @@ endmacro()
 
 # BUILD_TESTING
 # build target "test", which builds and runs all tests in TEST_SRCS
-option(BUILD_TESTING "Build and run test files" true)
-set(TEST_TARGETS)
-foreach(_testfile ${TEST_SRCS})
-  auto_add_exec(${_testfile} TEST_TARGETS ${EXAMPLE_DEPS})
-  add_test_exec(${_testfile})
-endforeach()
+cmake_dependent_option(BUILD_TESTING "Build and run test files" true
+  "BUILD_SHARED_LIBS OR BUILD_STATIC_LIBS" true)
+
+# BUILD_EXAMPLES
+# build target "examples", which builds all examples in EXAMPLE_SRCS
+cmake_dependent_option(BUILD_EXAMPLES "Build example files" false
+  "BUILD_SHARED_LIBS OR BUILD_STATIC_LIBS" true)
+
+
+if(BUILD_SHARED_LIBS OR BUILD_STATIC_LIBS)
 
 if(BUILD_TESTING)
-  add_custom_target(test ALL DEPENDS ${TEST_TARGETS})
-else(BUILD_TESTING)
+  set(TEST_TARGETS)
+  foreach(_testfile ${TEST_SRCS})
+    auto_add_exec(${_testfile} TEST_TARGETS ${EXAMPLE_DEPS})
+    add_test_exec(${_testfile})
+  endforeach()
   add_custom_target(test DEPENDS ${TEST_TARGETS})
 endif(BUILD_TESTING)
 
-# build target "examples", which builds all examples in EXAMPLE_SRCS
-option(BUILD_EXAMPLES "Build example files" false)
 if(BUILD_EXAMPLES)
   set(EXAMPLE_TARGETS)
   foreach(_exfile ${EXAMPLE_SRCS})
@@ -69,3 +78,5 @@ if(BUILD_EXAMPLES)
   endforeach()
   add_custom_target(examples DEPENDS ${EXAMPLE_TARGETS})
 endif(BUILD_EXAMPLES)
+
+endif(BUILD_SHARED_LIBS OR BUILD_STATIC_LIBS)
