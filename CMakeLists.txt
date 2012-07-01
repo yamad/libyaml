@@ -17,15 +17,20 @@ configure_file(                 # create configuration file
   "${PROJECT_SOURCE_DIR}/yaml_config.h.in"
   "${PROJECT_BINARY_DIR}/config.h"
   ESCAPE_QUOTES)
-
-set(YAML_PKGCONFIG_SRC "${PROJECT_SOURCE_DIR}/yaml.pc.in")
-set(YAML_PKGCONFIG "${PROJECT_BINARY_DIR}/yaml-${YAML_VERSION_MAJOR}.${YAML_VERSION_MINOR}.pc")
-configure_file(                 # create pkg-config file
-  ${YAML_PKGCONFIG_SRC}
-  ${YAML_PKGCONFIG}
-  @ONLY
-  )
 add_definitions(-DHAVE_CONFIG_H) # use configuration file
+
+# create pkg-config file
+option(MAKE_PKGCONFIG "Install pkg-config support files" true)
+if(MAKE_PKGCONFIG)
+  set(YAML_PKGCONFIG_SRC "${PROJECT_SOURCE_DIR}/yaml.pc.in")
+  set(YAML_PKGCONFIG "${PROJECT_BINARY_DIR}/yaml-${YAML_VERSION_MAJOR}.${YAML_VERSION_MINOR}.pc")
+  configure_file(
+    ${YAML_PKGCONFIG_SRC}
+    ${YAML_PKGCONFIG}
+    @ONLY
+    )
+  install(FILES ${YAML_PKGCONFIG} DESTINATION lib/pkgconfig)
+endif(MAKE_PKGCONFIG)
 
 # include build directory to see generated files
 include_directories("${PROJECT_BINARY_DIR}")
@@ -34,5 +39,4 @@ add_subdirectory(src)
 add_subdirectory(tests)
 add_subdirectory(doc)
 
-install(FILES ${YAML_PKGCONFIG} DESTINATION lib/pkgconfig)
 install(FILES "include/yaml.h" DESTINATION include)
