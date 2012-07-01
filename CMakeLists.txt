@@ -10,9 +10,11 @@ set(YAML_VERSION_PATCH 4)
 
 # shared library version numbers
 set(YAML_SO_RELEASE 0)
-set(YAML_SO_VERSION "${YAML_VERSION_MAJOR}.${YAML_VERSION_MINOR}")
+set(YAML_SO_VERSION "${YAML_SO_RELEASE}.${YAML_VERSION_MAJOR}.${YAML_VERSION_MINOR}")
 
 set(YAML_VERSION_STRING "${YAML_VERSION_MAJOR}.${YAML_VERSION_MINOR}.${YAML_VERSION_PATCH}")
+
+
 configure_file(                 # create configuration file
   "${PROJECT_SOURCE_DIR}/yaml_config.h.in"
   "${PROJECT_BINARY_DIR}/config.h"
