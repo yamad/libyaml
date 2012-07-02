@@ -41,8 +41,9 @@ work. Please let us know if you test with other platforms:
 
   * Unix Makefiles
   * Cygwin Makefiles
-  * Microsoft Visual Studio 10
-
+  * MSYS Makefiles
+  * Microsoft Visual Studio 10 x32
+  * Microsoft Visual Studio 10 x64
 
 Build options
 -------------

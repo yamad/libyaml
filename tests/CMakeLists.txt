@@ -51,14 +51,35 @@ macro(auto_add_exec _name _src_file _target_list)
   list(APPEND ${_target_list} ${_name})
 endmacro()
 
-# .dll needed in the tests directory on Windows
-set(CTEST_WORKDIR "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
-macro(copy_shared_lib_command _target)
+# `move_yaml_shared` target copys the shared library to tests directory
+if(BUILD_SHARED_LIBS)
+  set(CTEST_WORKDIR "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
+  get_target_property(_yaml_shared_file yaml_shared LOCATION)
+  get_filename_component(_yaml_shared_name ${_yaml_shared_file} NAME)
+  message(STATUS "yaml_shared file: ${_yaml_shared_file}")
+  message(STATUS "yaml_shared name: ${_yaml_shared_name}")
+  # using target instead of command ensures target is run first
+  add_custom_target(move_yaml_shared
+    COMMAND ${CMAKE_COMMAND} -E copy ${_yaml_shared_file} ${CTEST_WORKDIR}
+    DEPENDS yaml_shared
+    COMMENT "Move yaml_shared file to ${CTEST_WORKDIR}...")
+endif(BUILD_SHARED_LIBS)
+set(SHARED_REMOVE TRUE)
+set(NO_SHARED_REMOVE FALSE)
+
+# copy the shared library to tests directory before target is
+# built. does nothing if not on a system that needs this
+#   _target -- name of target that depends on the shared library
+#   _do_remove -- remove the share library after _target build is done?
+macro(copy_yaml_shared _target _do_remove)
   if(BUILD_SHARED_LIBS AND (WIN32 OR CYGWIN))
-    add_custom_command(TARGET ${_target}
-      PRE_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:yaml_shared> ${CTEST_WORKDIR}
-      COMMENT "Move yaml_shared file to ${CTEST_WORKDIR}...")
+    add_dependencies(${_target} move_yaml_shared)
+    if(${_do_remove})
+      add_custom_command(TARGET ${_target}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E remove ${CTEST_WORKDIR}/${_yaml_shared_name}
+        COMMENT "Remove yaml_shared file from ${CTEST_WORKDIR}...")
+    endif(${_do_remove})
   endif(BUILD_SHARED_LIBS AND (WIN32 OR CYGWIN))
 endmacro()
 
@@ -77,6 +98,7 @@ if(BUILD_TESTING)
     string(REPLACE ".c" "" _name ${_testfile})
     auto_add_exec(${_name} ${_testfile} TEST_TARGETS ${EXAMPLE_DEPS})
     add_test(${_name} ${_name})
+    copy_yaml_shared(${_name} NO_SHARED_REMOVE)
   endforeach()
 
   # default CTest target `test` does not automatically build tests
@@ -85,7 +107,9 @@ if(BUILD_TESTING)
     COMMAND ${CMAKE_CTEST_COMMAND} -C ${CTEST_BUILD_CONFIGURATION}
     DEPENDS ${TEST_TARGETS}
     COMMENT "Building and running tests...")
-  copy_shared_lib_command(check)
+  # remove shared library after tests are done
+  set(SHARED_REMOVE TRUE)
+  copy_yaml_shared(check SHARED_REMOVE)
 endif(BUILD_TESTING)
 
 if(BUILD_EXAMPLES)
@@ -93,7 +117,8 @@ if(BUILD_EXAMPLES)
   foreach(_exfile ${EXAMPLE_SRCS})
     string(REPLACE ".c" "" _name ${_exfile})
     auto_add_exec(${_name} ${_exfile} EXAMPLE_TARGETS ${EXAMPLE_DEPS})
-    copy_shared_lib_command(${_name})
+    # ensure shared library is there
+    copy_yaml_shared(${_name} NO_SHARED_REMOVE)
   endforeach()
   add_custom_target(examples DEPENDS ${EXAMPLE_TARGETS})
 endif(BUILD_EXAMPLES)
