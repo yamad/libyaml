@@ -1,0 +1,111 @@
+Quickstart
+----------
+
+To build and install the library, run:
+
+$ cd libyaml
+$ mkdir _build && cd _build
+$ cmake .. (or ccmake or cmake-gui)
+$ make
+$ make install
+
+
+Building from source
+--------------------
+
+This version of LibYAML uses the CMake meta-build system. Run cmake on
+your target platform to create the appropriate build scripts. Briefly:
+
+1) Ensure cmake is installed on your system <http://www.cmake.org>
+
+2) Download the LibYAML source <https://github.com/yamad/libyaml.git>
+
+2) Create a build directory
+
+3) From within the build directory, run `cmake` with the source root
+directory as a single argument (e.g. $ cmake <libyaml_src_dir> ). *You
+can also call `ccmake` for curses interface, or `cmake-gui` for a GUI
+interface.* `ccmake` is useful for choosing build options.
+
+3) Run the generated build files. If on a Unix-like system, this is
+likely `make`.
+
+See the CMake documentation for more information
+
+
+Platforms
+---------
+
+The following build platforms have been tested and are known to
+work. Please let us know if you test with other platforms:
+
+  * Unix Makefiles
+  * Microsoft Visual Studio 10
+
+
+Build options
+-------------
+
+The following LibYAML-specific build options are available:
+
+BUILD_DOCS
+  (Default: false) If true and doxygen is available, creates a `doc`
+  build target that creates doxygen html documenation
+
+BUILD_EXAMPLES
+  (Default: false) If true, creates an `examples` build target that
+  builds all example programs in the /tests directory. Examples use
+  the shared library if available.
+
+BUILD_SHARED_LIBS
+  (Default: true) If true, builds a shared library version of LibYAML.
+
+BUILD_STATIC_LIBS
+  (Default: true) If true, builds a static library version of LibYAML.
+
+BUILD_TESTING
+  (Default: true) If true, builds and runs test programs in the /tests
+  directory. Tests are built and run automatically as part of the
+  default target. Adds `test` and `check` targets. Tests use the
+  shared library if available.
+
+MAKE_LIBTOOL
+  (Default: false) If true, builds and installs a *.la file for use
+  with libtool. EXPERIMENTAL!
+
+MAKE_PKGCONFIG
+  (Default: true) If true, builds and installs a *.pc file for use
+  with pkg-config.
+
+
+Available build targets
+-----------------------
+
+The following build targets are available:
+
+<default>
+  the default target builds the library versions selected during build
+  configuration, and runs tests if BUILD_TESTING is on.
+
+install
+  installs the libraries and supporting files
+
+check
+  runs test files, and builds them if needed. only available if
+  BUILD_TESTING is on
+
+test
+  runs test files, but does not build them. only available if
+  BUILD_TESTING is on. individual test targets named for each test
+  program are also available (e.g. test-reader.c can be run with the
+  `test-reader` target).
+
+examples
+  builds example files. examples are not installed. only available if
+  BUILD_EXAMPLES is on. individual build targets named for each
+  example program are also available (e.g. run-dumper.c can be built
+  with the `run-dumper` target).
+
+doc
+  builds doxygen html documentation. documentation is not
+  installed. only available if BUILD_DOCS is on
