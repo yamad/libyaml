@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 2.8.4) # >= 2.8.4 needed for CYGWIN behavior
 project(yaml C)
 
-include(CMakeDependentOption)
-
 # package version numbers
 set(YAML_VERSION_MAJOR 0)
 set(YAML_VERSION_MINOR 1)
@@ -21,6 +19,7 @@ configure_file(                 # create configuration file
   ESCAPE_QUOTES)
 add_definitions(-DHAVE_CONFIG_H) # use configuration file
 
+include(CMakeDependentOption)
 # create pkg-config file
 option(MAKE_PKGCONFIG "Install pkg-config support files" true)
 if(MAKE_PKGCONFIG)
@@ -34,11 +33,13 @@ if(MAKE_PKGCONFIG)
   install(FILES ${YAML_PKGCONFIG} DESTINATION lib/pkgconfig)
 endif(MAKE_PKGCONFIG)
 
+
 # include build directory to see generated files
-include_directories("${PROJECT_BINARY_DIR}")
+include_directories(${PROJECT_BINARY_DIR})
+
+include_directories(${PROJECT_SOURCE_DIR}/include)
+install(FILES "include/yaml.h" DESTINATION include)
 
 add_subdirectory(src)
 add_subdirectory(tests)
 add_subdirectory(doc)
-
-install(FILES "include/yaml.h" DESTINATION include)
