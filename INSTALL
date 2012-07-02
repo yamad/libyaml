@@ -40,6 +40,7 @@ The following build platforms have been tested and are known to
 work. Please let us know if you test with other platforms:
 
   * Unix Makefiles
+  * Cygwin Makefiles
   * Microsoft Visual Studio 10
 
 

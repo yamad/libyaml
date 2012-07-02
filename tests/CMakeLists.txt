@@ -54,12 +54,12 @@ endmacro()
 # .dll needed in the tests directory on Windows
 set(CTEST_WORKDIR "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
 macro(copy_shared_lib_command _target)
-  if(WIN32 AND BUILD_SHARED_LIBS)
+  if(BUILD_SHARED_LIBS AND (WIN32 OR CYGWIN))
     add_custom_command(TARGET ${_target}
       PRE_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:yaml_shared> ${CTEST_WORKDIR}
       COMMENT "Move yaml_shared file to ${CTEST_WORKDIR}...")
-  endif(WIN32 AND BUILD_SHARED_LIBS)
+  endif(BUILD_SHARED_LIBS AND (WIN32 OR CYGWIN))
 endmacro()
 
 # only build tests or examples if a library is being built
