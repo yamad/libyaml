@@ -5,9 +5,10 @@ option(BUILD_SHARED_LIBS "Build shared library" true)
 if(BUILD_SHARED_LIBS)
   add_library(yaml_shared SHARED ${SRCS})
   set_target_properties(yaml_shared PROPERTIES
-    OUTPUT_NAME yaml
+    OUTPUT_NAME yaml            # shared library is named yaml
     VERSION ${YAML_SO_VERSION}
     SOVERSION ${YAML_SO_RELEASE}
+    COMPILE_FLAGS -DYAML_DECLARE_EXPORT
     )
   list(APPEND YAML_TARGETS yaml_shared)
   install(TARGETS yaml_shared DESTINATION lib)
@@ -17,8 +18,11 @@ option(BUILD_STATIC_LIBS "Build static library" true)
 if(BUILD_STATIC_LIBS)
   add_library(yaml_static STATIC ${SRCS})
   set_target_properties(yaml_static PROPERTIES
-    OUTPUT_NAME yaml
     COMPILE_FLAGS -DYAML_DECLARE_STATIC)
+  if(NOT WIN32)
+    set_target_properties(yaml_static PROPERTIES
+      OUTPUT_NAME yaml)         # static library is named yaml_static on Windows
+  endif(NOT WIN32)
   list(APPEND YAML_TARGETS yaml_static)
   install(TARGETS yaml_static DESTINATION lib)
 endif(BUILD_STATIC_LIBS)
