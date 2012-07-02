@@ -83,8 +83,13 @@ Available build targets
 The following build targets are available:
 
 <default>
-  the default target builds the library versions selected during build
-  configuration, and runs tests if BUILD_TESTING is on.
+  calls `yaml` to build all selected library versions
+
+yaml
+  builds selected library versions. `yaml_static` and `yaml_shared`
+  targets can be used to build library versions
+  individually. individual targets are only available if their
+  respective build options are on.
 
 install
   installs the libraries and supporting files. not available on Windows.
