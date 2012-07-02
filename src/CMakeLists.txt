@@ -11,7 +11,9 @@ if(BUILD_SHARED_LIBS)
     COMPILE_FLAGS -DYAML_DECLARE_EXPORT
     )
   list(APPEND YAML_TARGETS yaml_shared)
-  install(TARGETS yaml_shared DESTINATION lib)
+  if(NOT WIN32)
+    install(TARGETS yaml_shared DESTINATION lib)
+  endif(NOT WIN32)
 endif(BUILD_SHARED_LIBS)
 
 option(BUILD_STATIC_LIBS "Build static library" true)
@@ -24,11 +26,12 @@ if(BUILD_STATIC_LIBS)
       OUTPUT_NAME yaml)         # static library is named yaml_static on Windows
   endif(NOT WIN32)
   list(APPEND YAML_TARGETS yaml_static)
-  install(TARGETS yaml_static DESTINATION lib)
+  if(NOT WIN32)
+    install(TARGETS yaml_static DESTINATION lib)
+  endif(NOT WIN32)
 endif(BUILD_STATIC_LIBS)
 
 add_custom_target(yaml ${YAML_TARGETS})
-
 
 # taken from http://www.cmake.org/Wiki/CMakeMacroLibtoolFile
 # modified to add VERSION and SOVERSION
@@ -64,7 +67,9 @@ macro(CREATE_LIBTOOL_FILE _target _install_DIR)
   file(APPEND ${_laname_abs} "# Files to dlopen/dlpreopen\ndlopen=''\ndlpreopen=''\n\n")
   file(APPEND ${_laname_abs} "# Directory that this library needs to be installed in:\n")
   file(APPEND ${_laname_abs} "libdir='${CMAKE_INSTALL_PREFIX}${_install_DIR}'\n")
-  install_files(${_install_DIR} FILES ${_laname_abs})
+  if(NOT WIN32)
+    install_files(${_install_DIR} FILES ${_laname_abs})
+  endif(NOT WIN32)
 endmacro(CREATE_LIBTOOL_FILE)
 
 if(BUILD_SHARED_LIBS AND MAKE_LIBTOOL)

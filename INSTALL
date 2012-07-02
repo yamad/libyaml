@@ -87,7 +87,7 @@ The following build targets are available:
   configuration, and runs tests if BUILD_TESTING is on.
 
 install
-  installs the libraries and supporting files
+  installs the libraries and supporting files. not available on Windows.
 
 check
   runs tests files, and builds them if needed. only available if

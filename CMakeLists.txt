@@ -30,15 +30,20 @@ if(MAKE_PKGCONFIG)
     ${YAML_PKGCONFIG}
     @ONLY
     )
-  install(FILES ${YAML_PKGCONFIG} DESTINATION lib/pkgconfig)
+  if(NOT WIN32)
+    install(FILES ${YAML_PKGCONFIG} DESTINATION lib/pkgconfig)
+  endif(NOT WIN32)
 endif(MAKE_PKGCONFIG)
 
 
 # include build directory to see generated files
-include_directories(${PROJECT_BINARY_DIR})
+include_directories("${PROJECT_BINARY_DIR}")
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
-install(FILES "include/yaml.h" DESTINATION include)
+include_directories("${PROJECT_SOURCE_DIR}/include")
+
+if(NOT WIN32)
+  install(FILES "include/yaml.h" DESTINATION include)
+endif(NOT WIN32)
 
 enable_testing()
 
