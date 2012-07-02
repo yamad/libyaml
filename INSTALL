@@ -64,10 +64,9 @@ BUILD_STATIC_LIBS
   (Default: true) If true, builds a static library version of LibYAML.
 
 BUILD_TESTING
-  (Default: true) If true, builds and runs test programs in the /tests
-  directory. Tests are built and run automatically as part of the
-  default target. Adds `test` and `check` targets. Tests use the
-  shared library if available.
+  (Default: true) If true, adds `test` and `check` targets (see target
+  docs below) that run test programs from the tests directory. Tests
+  use the shared library if available.
 
 MAKE_LIBTOOL
   (Default: false) If true, builds and installs a *.la file for use
@@ -91,7 +90,7 @@ install
   installs the libraries and supporting files
 
 check
-  runs test files, and builds them if needed. only available if
+  runs tests files, and builds them if needed. only available if
   BUILD_TESTING is on
 
 test
