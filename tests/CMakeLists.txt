@@ -56,8 +56,6 @@ if(BUILD_SHARED_LIBS)
   set(CTEST_WORKDIR "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
   get_target_property(_yaml_shared_file yaml_shared LOCATION)
   get_filename_component(_yaml_shared_name ${_yaml_shared_file} NAME)
-  message(STATUS "yaml_shared file: ${_yaml_shared_file}")
-  message(STATUS "yaml_shared name: ${_yaml_shared_name}")
   # using target instead of command ensures target is run first
   add_custom_target(move_yaml_shared
     COMMAND ${CMAKE_COMMAND} -E copy ${_yaml_shared_file} ${CTEST_WORKDIR}
